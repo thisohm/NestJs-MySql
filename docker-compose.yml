@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0  # MySQL version 8.0 (or change it)
+    container_name: mysql_local
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root  # Root password
+      MYSQL_DATABASE: mydatabase  # Default database
+      MYSQL_USER: myuser  # Custom user
+      MYSQL_PASSWORD: mypassword  # User password
+    ports:
+      - "3306:3306"  # Expose MySQL on localhost
+    volumes:
+      - mysql_data:/var/lib/mysql  # Persistent data storage
+    networks:
+      - localnetwork
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_local
+    restart: always
+    environment:
+      PMA_HOST: mysql  # Link phpMyAdmin to MySQL
+      PMA_USER: root  # Use root user
+      PMA_PASSWORD: root  # Root password (same as MySQL)
+    ports:
+      - "8080:80"  # phpMyAdmin available at localhost:8080
+    depends_on:
+      - mysql
+    networks:
+      - localnetwork
+
+volumes:
+  mysql_data:
+
+networks:
+  localnetwork:
